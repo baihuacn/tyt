@@ -1,3 +1,7 @@
+* {
+  padding: 0;
+  margin: 0;
+}
 #homePage {
   /* display: none; */
   position: absolute;
@@ -23,12 +27,12 @@
   cursor: pointer;
 }
 #highestScore {
-  padding: 120px 0 180px 0;
+  padding: 80px 0 140px 0;
   cursor: auto;
 }
 .title {
   width: 100%;
-  padding: 100px 0;
+  padding: 80px 0;
   font-size: 48px;
   font-weight: 600;
   text-align: center;
@@ -42,9 +46,10 @@
   width: 100vw;
   height: 100vh;
   background: #7fe8fb;
+  cursor: pointer;
 }
 .description {
-  padding: 40px 0;
+  padding: 30px 0;
   font-size: 24px;
   font-weight: 600;
   text-align: center;
@@ -63,10 +68,15 @@
 #medium,
 #simple {
   width: 300px;
-  padding: 40px 0;
+  padding: 20px 0;
   margin: 40px auto;
   font-size: 48px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
+}
+#gamePage {
+  display: none;
+  width: 100vw;
+  height: 100vh;
 }
