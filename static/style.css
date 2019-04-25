@@ -1,0 +1,30 @@
+#homePage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  background: url('home.jpg');
+  background-size: 100vw 100vh;
+  background-repeat: no-repeat;
+}
+#highestScore,
+#startGame,
+#modeChoose,
+#gameDescription {
+  padding: 40px 0;
+  font-size: 48px;
+  font-weight: 600;
+  text-align: center;
+}
+#highestScore {
+  padding: 120px 0 180px 0;
+}
+#helpPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: none;
+}
