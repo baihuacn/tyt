@@ -1,4 +1,5 @@
 #homePage {
+  /* display: none; */
   position: absolute;
   top: 0;
   left: 0;
@@ -13,7 +14,9 @@
 #startGame,
 #modeChoose,
 #gameDescription {
+  width: 300px;
   padding: 40px 0;
+  margin: auto;
   font-size: 48px;
   font-weight: 600;
   text-align: center;
@@ -21,10 +24,46 @@
 #highestScore {
   padding: 120px 0 180px 0;
 }
+.title {
+  width: 100%;
+  padding: 100px 0;
+  font-size: 48px;
+  font-weight: 600;
+  text-align: center;
+}
 #helpPage {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  background: #7fe8fb;
+}
+.description {
+  padding: 40px 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+#modePage {
   display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  background: #7fe8fb;
+}
+#difficult,
+#medium,
+#simple {
+  width: 300px;
+  padding: 40px 0;
+  margin: 40px auto;
+  font-size: 48px;
+  font-weight: 600;
+  text-align: center;
 }
