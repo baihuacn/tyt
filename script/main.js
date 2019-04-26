@@ -76,6 +76,9 @@
       nextY = foothold.y - jumper.height
       jumper.y = nextY
       drawJumper()
+      // 重置数据，为再次起跳做准备
+      jumper = { ...jumper, ...jumperSpeed }
+      foothold = null
       return
     }
 
