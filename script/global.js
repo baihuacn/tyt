@@ -26,5 +26,7 @@
   degree = 1 // 困难程度参数，默认简单，1 | 2 | 3
   boxColors = ['#CD5C5C', '#CDB7B5', '#A2B5CD', '#8B7D6B', '#6E8B3D', '#424242', '#009ACD'] // 盒子的颜色，随机取值
   boxes = [{ color: '#CD5C5C', x: 0, y: innerHeight - 80, width: 40, height: 80 }] // 盒子的坐标宽高数据集合，根据这个数据来绘制盒子
-  jumper = { x: 0, y: innerHeight - 80 - 20, width: 20, height: 20, g: 2, vx: 12, vy: 10, color: '#f6aeab' } // 定义跳动的盒子的初始值，g：加速度，vx:x轴方向的速度，vy:y轴方向的速度
+  jumper = { x: 0, y: innerHeight - 80 - 20, width: 20, height: 20, g: 2, vx: 6, vy: 40, color: '#f6aeab' } // 定义跳动的盒子的初始值，g：加速度，vx:x轴方向的速度，vy:y轴方向的速度
+  foothold = null // 方块成功落到上面的盒子，如果有值则跳跃成功，方块停留在盒子上面
+  hinder = null // 方块前面的阻隔盒子，如果有值则跳跃失败，直接掉落下去
 })()

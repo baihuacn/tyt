@@ -49,23 +49,55 @@
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
   }
+  drawJumper()
   function updateJumper() {
-    console.log(jumper)
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
-    jumper.x += jumper.vx
-    jumper.y -= jumper.vy
-    jumper.vy -= jumper.g
-    var foundBox = boxes.find((item) => {
-      return item.x > jumper.x + jumper.width && item.x - 40 < jumper.x
-    })
-    if (jumper.x + jumper.width === 0) {
+    if (jumper.x >= innerWidth || jumper.y + jumper.height <= 0 || jumper.y > innerHeight) {
+      clearInterval(timer)
+      return
     }
-  }
-  function jumpUp() {
-    updateJumper()
+
+    var nextX = jumper.x + jumper.vx
+    var nextY = jumper.y - jumper.vy
+    var nextVY = jumper.vy - jumper.g
+    for (var i = 0; i < boxes.length; i++) {
+      var item = boxes[i]
+      if (nextX + jumper.width > item.x && nextX < item.x + item.width && jumper.y + jumper.height > item.y) {
+        hinder = boxes[i]
+        break
+      } else if (nextX < item.x + item.width && nextX > item.x - jumper.width && nextY >= item.y - jumper.height) {
+        foothold = boxes[i]
+        break
+      }
+    }
+
+    if (foothold) {
+      clearInterval(timer)
+      nextY = foothold.y - jumper.height
+      jumper.y = nextY
+      drawJumper()
+      return
+    }
+
+    if (hinder) {
+      nextX = hinder.x - jumper.width
+    }
+    jumper.x = nextX
+    jumper.y = nextY
+    jumper.vy = nextVY
     drawJumper()
   }
-  setInterval(function() {
-    jumpUp()
-  }, 1000)
+  window.onkeyup = function(event) {
+    if (event.keyCode === 32) {
+      // 播放跳跃音乐，500ms后播放停止
+      var audio = document.getElementById('jumperAudio')
+      audio.play()
+      setTimeout(function() {
+        audio.pause()
+      }, 500)
+      timer = setInterval(() => {
+        updateJumper()
+      }, 20)
+    }
+  }
 })()
