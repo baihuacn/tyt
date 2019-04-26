@@ -5,13 +5,17 @@
   function getRandomNumber(range) {
     return Math.floor(Math.random() * range)
   }
-  function drawBox() {
-    var boxHeight = 80
-    var boxWidth = 40
+  function createBoxes() {
+    var boxHeight = boxes[boxes.length - 1].height
+    var boxWidth = boxes[boxes.length - 1].width
     var spacing = 40
     var heightDifference = 40
     var increase = true
-    for (var i = 0; i < 10; i++) {
+    var totalWidth = 0
+    boxes.forEach((item) => {
+      totalWidth += item.width + spacing
+    })
+    while (totalWidth + boxWidth <= innerWidth) {
       if (innerHeight - boxHeight < 300) {
         increase = false
       } else if (boxHeight < 80) {
@@ -22,30 +26,46 @@
       } else {
         boxHeight = boxHeight - heightDifference
       }
-      ctx.fillStyle = boxColors[getRandomNumber(6)]
-      ctx.fillRect(i * (boxWidth + spacing), innerHeight - boxHeight, boxWidth, boxHeight)
+      boxes.push({
+        color: boxColors[getRandomNumber(6)],
+        x: boxes.length * (boxWidth + spacing),
+        y: innerHeight - boxHeight,
+        width: boxWidth,
+        height: boxHeight
+      })
+      totalWidth += boxWidth + spacing
     }
   }
-  drawBox()
-  function render(cxt) {
-    cxt.clearRect(ball.x - ball.r, ball.y - ball.r, 2 * ball.r, 2 * ball.r)
-    update()
-    cxt.beginPath()
-    cxt.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI)
-    cxt.fillStyle = ball.color
-    cxt.fill() //填充
+  createBoxes()
+  function drawBoxes() {
+    boxes.forEach((item) => {
+      ctx.fillStyle = item.color
+      ctx.fillRect(item.x, item.y, item.width, item.height)
+    })
   }
-  function update() {
-    ball.x += ball.vx
-    ball.y += ball.vy
-    ball.vy += ball.g
-    if (ball.y >= 768 - ball.r) {
-      ball.y = 768 - ball.r
-      ball.vy = -ball.vy * 0.5 //到达底部弹起来，*0.5有个缓冲的效果
+  drawBoxes()
+  function drawJumper() {
+    ctx.beginPath()
+    ctx.fillStyle = jumper.color
+    ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
+  }
+  function updateJumper() {
+    console.log(jumper)
+    ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
+    jumper.x += jumper.vx
+    jumper.y -= jumper.vy
+    jumper.vy -= jumper.g
+    var foundBox = boxes.find((item) => {
+      return item.x > jumper.x + jumper.width && item.x - 40 < jumper.x
+    })
+    if (jumper.x + jumper.width === 0) {
     }
   }
-  var ball = { x: 0, y: 0, r: 20, g: 2, vx: 4, vy: 10, color: '#f6aeab' } //定义球的初始值g：加速度，vx:x轴方向的速度，vy:y轴方向的速度
+  function jumpUp() {
+    updateJumper()
+    drawJumper()
+  }
   setInterval(function() {
-    render(ctx)
-  }, 50)
+    jumpUp()
+  }, 1000)
 })()
