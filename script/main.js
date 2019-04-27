@@ -91,6 +91,24 @@
   function drawJumper() {
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
+    ctx.beginPath()
+    ctx.fillStyle = '#fff'
+    ctx.arc(jumper.x + jumper.width / 4, jumper.y + 6, 3, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.fillStyle = '#fff'
+    ctx.arc(jumper.x + (jumper.width / 4) * 3, jumper.y + 6, 3, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.fillStyle = '#000'
+    ctx.arc(jumper.x + jumper.width / 4, jumper.y + 6, 1.5, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.fillStyle = '#000'
+    ctx.arc(jumper.x + (jumper.width / 4) * 3, jumper.y + 6, 1.5, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(jumper.x + 4, jumper.y + 12, 12, 4)
   }
   function updateJumper() {
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
