@@ -36,24 +36,22 @@
       totalWidth += boxWidth + spacing
     }
   }
-  createBoxes()
   function drawBoxes() {
     boxes.forEach((item) => {
       ctx.fillStyle = item.color
       ctx.fillRect(item.x, item.y, item.width, item.height)
     })
   }
-  drawBoxes()
   function drawJumper() {
     ctx.beginPath()
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
   }
-  drawJumper()
   function updateJumper() {
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
     if (jumper.x >= innerWidth || jumper.y + jumper.height <= 0 || jumper.y > innerHeight) {
       clearInterval(timer)
+      endGame()
       return
     }
 
@@ -90,13 +88,12 @@
     jumper.vy = nextVY
     drawJumper()
   }
-  var keyDownTime = 0
-  window.onkeydown = function() {
+  function timeStart(event) {
     if (event.keyCode === 32) {
       keyDownTime = new Date().getTime()
     }
   }
-  window.onkeyup = function(event) {
+  function timeEnd(event) {
     if (event.keyCode === 32) {
       // 空格键按下蓄力的时间，设置横向及纵向的移动速度
       var storingForceTime = (new Date().getTime() - keyDownTime) / 1000
@@ -112,5 +109,31 @@
         updateJumper()
       }, 20)
     }
+  }
+  function addEventListen() {
+    window.addEventListener('keydown', timeStart)
+    window.addEventListener('keyup', timeEnd)
+  }
+  function removeEventListen() {
+    window.removeEventListener('keydown', timeStart)
+    window.removeEventListener('keyup', timeEnd)
+  }
+  window.initialGame = function() {
+    createBoxes()
+    drawBoxes()
+    drawJumper()
+    addEventListen()
+  }
+  function endGame() {
+    jumper = { ...initialJumper }
+    boxes = [{ ...initialBox }]
+    foothold = null
+    hinder = null
+    keyDownTime = 0
+    removeEventListen()
+    setTimeout(() => {
+      homePage.style.display = 'block'
+      gamePage.style.display = 'none'
+    }, 700)
   }
 })()

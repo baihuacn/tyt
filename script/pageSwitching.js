@@ -6,6 +6,7 @@
   startGameBtn.onclick = function() {
     homePage.style.display = 'none'
     gamePage.style.display = 'block'
+    initialGame()
   }
   // 点击模式选择
   modeChooseBtn.onclick = function() {
