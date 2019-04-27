@@ -75,6 +75,7 @@
       jumper.y = nextY
       drawJumper()
       // 重置数据，为再次起跳做准备
+      addEventListen()
       jumper = { ...jumper, ...jumperSpeed }
       foothold = null
       return
@@ -95,6 +96,7 @@
   }
   function timeEnd(event) {
     if (event.keyCode === 32) {
+      removeEventListen()
       // 空格键按下蓄力的时间，设置横向及纵向的移动速度
       var storingForceTime = (new Date().getTime() - keyDownTime) / 1000
       jumper.vy = parseInt(storingForceTime * 100)
