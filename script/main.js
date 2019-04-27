@@ -49,6 +49,7 @@
         default:
           break
       }
+      // 判断方块是在向上增高还是向下缩短
       if (innerHeight - boxHeight < 300) {
         increase = false
       } else if (boxHeight <= 80) {
@@ -95,30 +96,40 @@
   }
   // 绘制方块，眼睛、嘴巴
   function drawJumper() {
+    // 绘制身体
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
+    // 绘制左眼白色部分
     ctx.beginPath()
     ctx.fillStyle = '#fff'
     ctx.arc(jumper.x + jumper.width / 4, jumper.y + 6, 3, 0, 2 * Math.PI)
     ctx.fill()
+    // 绘制右眼白色部分
     ctx.beginPath()
     ctx.fillStyle = '#fff'
     ctx.arc(jumper.x + (jumper.width / 4) * 3, jumper.y + 6, 3, 0, 2 * Math.PI)
     ctx.fill()
+    // 绘制左眼黑色部分
     ctx.beginPath()
     ctx.fillStyle = '#000'
     ctx.arc(jumper.x + jumper.width / 4, jumper.y + 6, 1.5, 0, 2 * Math.PI)
     ctx.fill()
+    // 绘制右眼黑色部分
     ctx.beginPath()
     ctx.fillStyle = '#000'
     ctx.arc(jumper.x + (jumper.width / 4) * 3, jumper.y + 6, 1.5, 0, 2 * Math.PI)
     ctx.fill()
+    // 绘制嘴巴
     ctx.fillStyle = '#fff'
     ctx.fillRect(jumper.x + 4, jumper.y + 12, 12, 4)
   }
   // 更新方块位置
   function updateJumper() {
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
+    // 方块跳到当前得分的高度需要重绘得分防止被clearReact擦掉内容
+    if (jumper.y < 50) {
+      drawCurrentScore()
+    }
     if (jumper.x >= innerWidth || jumper.y + jumper.height <= 0 || jumper.y > innerHeight) {
       clearInterval(timer)
       endGame()
@@ -131,13 +142,14 @@
     var footholdIndex = 0
     for (var i = 0; i < boxes.length; i++) {
       var item = boxes[i]
+      // 判断下一个要绘制的方块是碰到障碍物还是安全降落在了盒子上
       if (
         nextX + jumper.width > item.x &&
         nextX < item.x + item.width &&
         jumper.y + jumper.height > item.y &&
         nextY < item.y + item.height
       ) {
-        // 方块被盒子阻挡
+        // 方块被盒子阻挡，（方块在盒子的高度范围内并在盒子左侧）
         hinder = item
         break
       } else if (
@@ -146,7 +158,7 @@
         nextY >= item.y - jumper.height &&
         nextY < item.y + item.height - jumper.height
       ) {
-        // 方块成功落在盒子上
+        // 方块成功落在盒子上，（方块在盒子上方并在盒子宽度范围内容）
         foothold = item
         footholdIndex = i
         break
@@ -154,10 +166,13 @@
     }
 
     if (foothold) {
+      // 判断当前降落的盒子和之前的盒子不一样的话当前得分就加一
+      if (JSON.stringify(historyFoothold) !== JSON.stringify(foothold)) {
+        currentScore += 1
+      }
       clearInterval(timer)
       nextY = foothold.y - jumper.height
       jumper.y = nextY
-      currentScore += 1
       ctx.clearRect(0, 0, innerWidth, innerHeight)
       drawJumper()
       drawBoxes()
@@ -165,6 +180,7 @@
       // 重置数据，为再次起跳做准备
       addEventListen()
       jumper = { ...jumper, ...jumperSpeed }
+      historyFoothold = foothold
       foothold = null
       if (footholdIndex > 2) {
         setTimeout(() => {
@@ -184,17 +200,17 @@
   }
   // 按下空格键开始计时
   function timeStart(event) {
-    if (event.keyCode === 32) {
+    if (!keyDownTime && event.keyCode === 32) {
       keyDownTime = new Date().getTime()
     }
   }
   // 松开空格键，结束计时开始跳跃
   function timeEnd(event) {
-    if (event.keyCode === 32) {
+    if (keyDownTime && event.keyCode === 32) {
       removeEventListen()
       // 空格键按下蓄力的时间，设置横向及纵向的移动速度
       var storingForceTime = (new Date().getTime() - keyDownTime) / 1000
-      jumper.vy = parseInt(storingForceTime * 100)
+      jumper.vy = parseInt(storingForceTime * 80)
       jumper.vx = parseInt(storingForceTime * 10) + 1
       // 播放跳跃音乐，500ms后播放停止
       var audio = document.getElementById('jumperAudio')
@@ -205,6 +221,7 @@
       timer = setInterval(() => {
         updateJumper()
       }, 20)
+      keyDownTime = 0
     }
   }
   // 添加监听键盘敲击事件
@@ -222,6 +239,7 @@
     createBoxes()
     drawBoxes()
     drawJumper()
+    drawCurrentScore()
     addEventListen()
   }
   // 结束游戏，清空相关数据，计算最高得分
