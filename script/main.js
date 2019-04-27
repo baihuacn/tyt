@@ -11,6 +11,7 @@
       var boxWidth = 0
       var spacing = 0
       var heightDifference = 0
+      var emptyDifference = 0
       var increase = true
       var lastBox = boxes[boxes.length - 1]
       switch (degree) {
@@ -19,18 +20,21 @@
           boxWidth = initialBox.width + initialBox.width * getRandomNumber(2)
           spacing = 40
           heightDifference = 40
+          emptyDifference = 0
           break
         case 2:
           boxHeight = initialBox.height
           boxWidth = initialBox.width
           spacing = 40 + 20 * getRandomNumber(5)
           heightDifference = 40 + 50 * getRandomNumber(9)
+          emptyDifference = 0
           break
         case 3:
-          // boxHeight = initialBox.height
-          // boxWidth = initialBox.width
-          // spacing = 40 + 10 * getRandomNumber(3)
-          // heightDifference = 40 + 10 * getRandomNumber(4)
+          boxHeight = initialBox.height
+          boxWidth = initialBox.width
+          spacing = 40 + 20 * getRandomNumber(5)
+          heightDifference = 40 + 50 * getRandomNumber(9)
+          emptyDifference = heightDifference - 10 * getRandomNumber(3)
           break
         default:
           break
@@ -50,7 +54,7 @@
         x: lastBox.x + lastBox.width + spacing,
         y: innerHeight - boxHeight,
         width: boxWidth,
-        height: boxHeight,
+        height: boxHeight - emptyDifference,
         spacing
       })
     }
@@ -68,7 +72,6 @@
   function updateBoxes() {
     var firstBox = boxes.shift()
     var offsetX = firstBox.width + firstBox.spacing
-    console.log('clear', firstBox)
     ctx.clearRect(0, 0, innerWidth, innerHeight)
     boxes.forEach((item) => {
       item.x -= offsetX
@@ -95,7 +98,12 @@
     var footholdIndex = 0
     for (var i = 0; i < boxes.length; i++) {
       var item = boxes[i]
-      if (nextX + jumper.width > item.x && nextX < item.x + item.width && jumper.y + jumper.height > item.y) {
+      if (
+        nextX + jumper.width > item.x &&
+        nextX < item.x + item.width &&
+        jumper.y + jumper.height > item.y &&
+        nextY < item.y + item.height
+      ) {
         hinder = item
         break
       } else if (nextX > item.x - jumper.width + 1 && nextX < item.x + item.width && nextY >= item.y - jumper.height) {
@@ -114,7 +122,7 @@
       addEventListen()
       jumper = { ...jumper, ...jumperSpeed }
       foothold = null
-      if (footholdIndex > 1) {
+      if (footholdIndex > 2) {
         setTimeout(() => {
           updateBoxes()
         }, 100)
