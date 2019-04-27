@@ -36,5 +36,6 @@
   historyFoothold = { ...initialBox } // 历史的停留盒子，用来和当前落在的盒子作比较判断是否跳跃出去
   hinder = null // 方块前面的阻隔盒子，如果有值则跳跃失败，直接掉落下去
   keyDownTime = 0 // 空格键按下开始蓄力的时间
+  touchStartX = 0 // 手指开始滑动的起始x位置
   timer = null // 定时器，定时更新方块的位置
 })()

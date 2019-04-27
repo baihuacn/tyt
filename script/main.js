@@ -213,10 +213,9 @@
       jumper.vy = parseInt(storingForceTime * 80)
       jumper.vx = parseInt(storingForceTime * 10) + 1
       // 播放跳跃音乐，500ms后播放停止
-      var audio = document.getElementById('jumperAudio')
-      audio.play()
+      jumperAudio.play()
       setTimeout(function() {
-        audio.pause()
+        jumperAudio.pause()
       }, 500)
       timer = setInterval(() => {
         updateJumper()
@@ -224,15 +223,39 @@
       keyDownTime = 0
     }
   }
+  function touchStart(event) {
+    if (!touchStartX) {
+      touchStartX = event.changedTouches[0].pageX
+    }
+  }
+  function touchEnd(event) {
+    var touchEndX = event.changedTouches[0].pageX
+    var distanceX = Math.abs(touchEndX - touchStartX)
+    jumper.vy = parseInt(distanceX / 10) + 10
+    jumper.vx = parseInt(distanceX / 20)
+    // 播放跳跃音乐，500ms后播放停止
+    jumperAudio.play()
+    setTimeout(function() {
+      jumperAudio.pause()
+    }, 500)
+    timer = setInterval(() => {
+      updateJumper()
+    }, 20)
+    touchStartX = 0
+  }
   // 添加监听键盘敲击事件
   function addEventListen() {
     window.addEventListener('keydown', timeStart)
     window.addEventListener('keyup', timeEnd)
+    window.addEventListener('touchstart', touchStart)
+    window.addEventListener('touchend', touchEnd)
   }
   // 移除监听键盘敲击事件
   function removeEventListen() {
     window.removeEventListener('keydown', timeStart)
     window.removeEventListener('keyup', timeEnd)
+    window.removeEventListener('touchstart', touchStart)
+    window.removeEventListener('touchend', touchEnd)
   }
   // 打开游戏页面后，初始化游戏
   window.initialGame = function() {
