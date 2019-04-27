@@ -10,7 +10,7 @@
   function drawCurrentScore() {
     ctx.beginPath()
     ctx.fillStyle = '#000'
-    ctx.font = 'bold 36px Arial'
+    ctx.font = 'bold 28px Arial'
     var textWidth = ctx.measureText('当前得分：' + currentScore).width
     ctx.fillText('当前得分：' + currentScore, (innerWidth - textWidth) / 2, 40)
   }
