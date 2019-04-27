@@ -114,7 +114,12 @@
       ) {
         hinder = item
         break
-      } else if (nextX > item.x - jumper.width + 1 && nextX < item.x + item.width && nextY >= item.y - jumper.height) {
+      } else if (
+        nextX > item.x - jumper.width &&
+        nextX < item.x + item.width &&
+        nextY >= item.y - jumper.height &&
+        nextY < item.y + item.height - jumper.height
+      ) {
         foothold = item
         footholdIndex = i
         break
