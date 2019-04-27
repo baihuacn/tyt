@@ -2,9 +2,11 @@
  * @file: 游戏主要控制逻辑
  */
 ;(function() {
+  // 获取随机数，如：range = 9 随机数是[0,9)
   function getRandomNumber(range) {
     return Math.floor(Math.random() * range)
   }
+  // 绘制当前得分
   function drawCurrentScore() {
     ctx.beginPath()
     ctx.fillStyle = '#000'
@@ -12,6 +14,7 @@
     var textWidth = ctx.measureText('当前得分：' + currentScore).width
     ctx.fillText('当前得分：' + currentScore, (innerWidth - textWidth) / 2, 40)
   }
+  // 创建100个盒子数据
   function createBoxes() {
     while (boxes.length < 100) {
       var boxHeight = 0
@@ -22,21 +25,21 @@
       var increase = true
       var lastBox = boxes[boxes.length - 1]
       switch (degree) {
-        case 1:
+        case 1: // 简单模式
           boxHeight = lastBox.height
           boxWidth = initialBox.width + initialBox.width * getRandomNumber(2)
           spacing = 40
           heightDifference = 40
           emptyDifference = 0
           break
-        case 2:
+        case 2: // 中等模式
           boxHeight = initialBox.height
           boxWidth = initialBox.width
           spacing = 40 + 20 * getRandomNumber(5)
           heightDifference = 40 + 50 * getRandomNumber(9)
           emptyDifference = 0
           break
-        case 3:
+        case 3: // 困难模式
           boxHeight = initialBox.height
           boxWidth = initialBox.width
           spacing = 40 + 20 * getRandomNumber(5)
@@ -66,6 +69,7 @@
       })
     }
   }
+  // 绘制所有的盒子数据，超出页面的盒子就是无效绘制
   function drawBoxes() {
     for (var i = 0; i < boxes.length; i++) {
       var item = boxes[i]
@@ -76,6 +80,7 @@
       ctx.fillRect(item.x, item.y, item.width, item.height)
     }
   }
+  // 更新盒子数据，删除第一个，后面的盒子往左移动，实现页面滚动效果
   function updateBoxes() {
     var firstBox = boxes.shift()
     var offsetX = firstBox.width + firstBox.spacing
@@ -88,6 +93,7 @@
     drawCurrentScore()
     drawBoxes()
   }
+  // 绘制方块，眼睛、嘴巴
   function drawJumper() {
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
@@ -110,6 +116,7 @@
     ctx.fillStyle = '#fff'
     ctx.fillRect(jumper.x + 4, jumper.y + 12, 12, 4)
   }
+  // 更新方块位置
   function updateJumper() {
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
     if (jumper.x >= innerWidth || jumper.y + jumper.height <= 0 || jumper.y > innerHeight) {
@@ -130,6 +137,7 @@
         jumper.y + jumper.height > item.y &&
         nextY < item.y + item.height
       ) {
+        // 方块被盒子阻挡
         hinder = item
         break
       } else if (
@@ -138,6 +146,7 @@
         nextY >= item.y - jumper.height &&
         nextY < item.y + item.height - jumper.height
       ) {
+        // 方块成功落在盒子上
         foothold = item
         footholdIndex = i
         break
@@ -173,11 +182,13 @@
     jumper.vy = nextVY
     drawJumper()
   }
+  // 按下空格键开始计时
   function timeStart(event) {
     if (event.keyCode === 32) {
       keyDownTime = new Date().getTime()
     }
   }
+  // 松开空格键，结束计时开始跳跃
   function timeEnd(event) {
     if (event.keyCode === 32) {
       removeEventListen()
@@ -196,20 +207,24 @@
       }, 20)
     }
   }
+  // 添加监听键盘敲击事件
   function addEventListen() {
     window.addEventListener('keydown', timeStart)
     window.addEventListener('keyup', timeEnd)
   }
+  // 移除监听键盘敲击事件
   function removeEventListen() {
     window.removeEventListener('keydown', timeStart)
     window.removeEventListener('keyup', timeEnd)
   }
+  // 打开游戏页面后，初始化游戏
   window.initialGame = function() {
     createBoxes()
     drawBoxes()
     drawJumper()
     addEventListen()
   }
+  // 结束游戏，清空相关数据，计算最高得分
   function endGame() {
     if (highestScore < currentScore) {
       highestScore = currentScore
@@ -223,6 +238,7 @@
     removeEventListen()
     ctx.clearRect(0, 0, innerWidth, innerHeight)
     setTimeout(() => {
+      // 关闭游戏页面更新最高分
       homePage.style.display = 'block'
       gamePage.style.display = 'none'
       highestScoreBtn.innerText = '最高分：' + highestScore
