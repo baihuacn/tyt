@@ -5,6 +5,13 @@
   function getRandomNumber(range) {
     return Math.floor(Math.random() * range)
   }
+  function drawCurrentScore() {
+    ctx.beginPath()
+    ctx.fillStyle = '#000'
+    ctx.font = 'bold 36px Arial'
+    var textWidth = ctx.measureText('当前得分：' + currentScore).width
+    ctx.fillText('当前得分：' + currentScore, (innerWidth - textWidth) / 2, 40)
+  }
   function createBoxes() {
     while (boxes.length < 100) {
       var boxHeight = 0
@@ -78,6 +85,7 @@
     })
     jumper.x -= offsetX
     drawJumper()
+    drawCurrentScore()
     drawBoxes()
   }
   function drawJumper() {
@@ -117,7 +125,11 @@
       clearInterval(timer)
       nextY = foothold.y - jumper.height
       jumper.y = nextY
+      currentScore += 1
+      ctx.clearRect(0, 0, innerWidth, innerHeight)
       drawJumper()
+      drawBoxes()
+      drawCurrentScore()
       // 重置数据，为再次起跳做准备
       addEventListen()
       jumper = { ...jumper, ...jumperSpeed }
@@ -176,16 +188,21 @@
     addEventListen()
   }
   function endGame() {
+    if (highestScore < currentScore) {
+      highestScore = currentScore
+    }
     jumper = { ...initialJumper }
     boxes = [{ ...initialBox }]
     foothold = null
     hinder = null
     keyDownTime = 0
+    currentScore = 0
     removeEventListen()
     ctx.clearRect(0, 0, innerWidth, innerHeight)
     setTimeout(() => {
       homePage.style.display = 'block'
       gamePage.style.display = 'none'
+      highestScoreBtn.innerText = '最高分：' + highestScore
     }, 700)
   }
 })()

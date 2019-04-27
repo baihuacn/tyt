@@ -13,7 +13,8 @@
   ctx = gamePage.getContext('2d')
   // 音频对象
   jumperAudio = document.getElementById('jumperAudio')
-  // 主页面菜单按钮对象
+  // 主页面菜单对象
+  highestScoreBtn = document.getElementById('highestScore')
   startGameBtn = document.getElementById('startGame')
   modeChooseBtn = document.getElementById('modeChoose')
   gameDescriptionBtn = document.getElementById('gameDescription')
@@ -23,6 +24,7 @@
   simpleBtn = document.getElementById('simple')
   // 游戏参数
   highestScore = 0 // 最高分
+  currentScore = 0 // 当前得分
   degree = 1 // 困难程度参数，默认简单，1 | 2 | 3
   boxColors = ['#CD5C5C', '#CDB7B5', '#A2B5CD', '#8B7D6B', '#6E8B3D', '#424242', '#009ACD'] // 盒子的颜色，随机取值
   initialBox = { color: '#CD5C5C', x: 0, y: innerHeight - 80, width: 40, height: 80, spacing: 0 } // 盒子的坐标宽高数据集合，根据这个数据来绘制盒子
