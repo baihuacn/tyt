@@ -63,10 +63,10 @@
     for (var i = 0; i < boxes.length; i++) {
       var item = boxes[i]
       if (nextX + jumper.width > item.x && nextX < item.x + item.width && jumper.y + jumper.height > item.y) {
-        hinder = boxes[i]
+        hinder = item
         break
-      } else if (nextX < item.x + item.width && nextX > item.x - jumper.width && nextY >= item.y - jumper.height) {
-        foothold = boxes[i]
+      } else if (nextX > item.x - jumper.width + 1 && nextX < item.x + item.width && nextY >= item.y - jumper.height) {
+        foothold = item
         break
       }
     }
@@ -90,8 +90,18 @@
     jumper.vy = nextVY
     drawJumper()
   }
+  var keyDownTime = 0
+  window.onkeydown = function() {
+    if (event.keyCode === 32) {
+      keyDownTime = new Date().getTime()
+    }
+  }
   window.onkeyup = function(event) {
     if (event.keyCode === 32) {
+      // 空格键按下蓄力的时间，设置横向及纵向的移动速度
+      var storingForceTime = (new Date().getTime() - keyDownTime) / 1000
+      jumper.vy = parseInt(storingForceTime * 100)
+      jumper.vx = parseInt(storingForceTime * 10) + 1
       // 播放跳跃音乐，500ms后播放停止
       var audio = document.getElementById('jumperAudio')
       audio.play()
