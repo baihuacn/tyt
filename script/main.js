@@ -223,11 +223,13 @@
       keyDownTime = 0
     }
   }
+  // 触摸开始
   function touchStart(event) {
     if (!touchStartX) {
       touchStartX = event.changedTouches[0].pageX
     }
   }
+  // 触摸结束
   function touchEnd(event) {
     var touchEndX = event.changedTouches[0].pageX
     var distanceX = Math.abs(touchEndX - touchStartX)
