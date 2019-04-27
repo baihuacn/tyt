@@ -6,19 +6,42 @@
     return Math.floor(Math.random() * range)
   }
   function createBoxes() {
-    var boxHeight = boxes[boxes.length - 1].height
-    var boxWidth = boxes[boxes.length - 1].width
-    var spacing = 40
-    var heightDifference = 40
+    var boxHeight = 0
+    var boxWidth = 0
+    var spacing = 0
+    var heightDifference = 0
     var increase = true
     var totalWidth = 0
     boxes.forEach((item) => {
       totalWidth += item.width + spacing
     })
     while (totalWidth + boxWidth <= innerWidth) {
+      var lastBox = boxes[boxes.length - 1]
+      switch (degree) {
+        case 1:
+          boxHeight = lastBox.height
+          boxWidth = initialBox.width + initialBox.width * getRandomNumber(2)
+          spacing = 40
+          heightDifference = 40
+          break
+        case 2:
+          boxHeight = initialBox.height
+          boxWidth = initialBox.width
+          spacing = 40 + 20 * getRandomNumber(5)
+          heightDifference = 40 + 50 * getRandomNumber(9)
+          break
+        case 3:
+          // boxHeight = initialBox.height
+          // boxWidth = initialBox.width
+          // spacing = 40 + 10 * getRandomNumber(3)
+          // heightDifference = 40 + 10 * getRandomNumber(4)
+          break
+        default:
+          break
+      }
       if (innerHeight - boxHeight < 300) {
         increase = false
-      } else if (boxHeight < 80) {
+      } else if (boxHeight <= 80) {
         increase = true
       }
       if (increase) {
@@ -28,7 +51,7 @@
       }
       boxes.push({
         color: boxColors[getRandomNumber(6)],
-        x: boxes.length * (boxWidth + spacing),
+        x: lastBox.x + lastBox.width + spacing,
         y: innerHeight - boxHeight,
         width: boxWidth,
         height: boxHeight
@@ -133,6 +156,7 @@
     hinder = null
     keyDownTime = 0
     removeEventListen()
+    ctx.clearRect(0, 0, innerWidth, innerHeight)
     setTimeout(() => {
       homePage.style.display = 'block'
       gamePage.style.display = 'none'

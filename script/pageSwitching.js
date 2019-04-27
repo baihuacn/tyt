@@ -15,21 +15,24 @@
   }
   // 点击困难模式
   difficultBtn.onclick = function() {
-    homePage.style.display = 'block'
+    gamePage.style.display = 'block'
     modePage.style.display = 'none'
     degree = 3
+    initialGame()
   }
   // 点击中等模式
   mediumBtn.onclick = function() {
-    homePage.style.display = 'block'
+    gamePage.style.display = 'block'
     modePage.style.display = 'none'
     degree = 2
+    initialGame()
   }
   // 点击简单模式
   simpleBtn.onclick = function() {
-    homePage.style.display = 'block'
+    gamePage.style.display = 'block'
     modePage.style.display = 'none'
     degree = 1
+    initialGame()
   }
   // 点击首页游戏说明按钮显示游戏说明页面
   gameDescriptionBtn.onclick = function() {
