@@ -6,16 +6,12 @@
     return Math.floor(Math.random() * range)
   }
   function createBoxes() {
-    var boxHeight = 0
-    var boxWidth = 0
-    var spacing = 0
-    var heightDifference = 0
-    var increase = true
-    var totalWidth = 0
-    boxes.forEach((item) => {
-      totalWidth += item.width + spacing
-    })
-    while (totalWidth + boxWidth <= innerWidth) {
+    while (boxes.length < 100) {
+      var boxHeight = 0
+      var boxWidth = 0
+      var spacing = 0
+      var heightDifference = 0
+      var increase = true
       var lastBox = boxes[boxes.length - 1]
       switch (degree) {
         case 1:
@@ -54,19 +50,34 @@
         x: lastBox.x + lastBox.width + spacing,
         y: innerHeight - boxHeight,
         width: boxWidth,
-        height: boxHeight
+        height: boxHeight,
+        spacing
       })
-      totalWidth += boxWidth + spacing
     }
   }
   function drawBoxes() {
-    boxes.forEach((item) => {
+    for (var i = 0; i < boxes.length; i++) {
+      var item = boxes[i]
+      if (item.x >= innerWidth) {
+        return
+      }
       ctx.fillStyle = item.color
       ctx.fillRect(item.x, item.y, item.width, item.height)
+    }
+  }
+  function updateBoxes() {
+    var firstBox = boxes.shift()
+    var offsetX = firstBox.width + firstBox.spacing
+    console.log('clear', firstBox)
+    ctx.clearRect(0, 0, innerWidth, innerHeight)
+    boxes.forEach((item) => {
+      item.x -= offsetX
     })
+    jumper.x -= offsetX
+    drawJumper()
+    drawBoxes()
   }
   function drawJumper() {
-    ctx.beginPath()
     ctx.fillStyle = jumper.color
     ctx.fillRect(jumper.x, jumper.y, jumper.width, jumper.height)
   }
@@ -81,6 +92,7 @@
     var nextX = jumper.x + jumper.vx
     var nextY = jumper.y - jumper.vy
     var nextVY = jumper.vy - jumper.g
+    var footholdIndex = 0
     for (var i = 0; i < boxes.length; i++) {
       var item = boxes[i]
       if (nextX + jumper.width > item.x && nextX < item.x + item.width && jumper.y + jumper.height > item.y) {
@@ -88,6 +100,7 @@
         break
       } else if (nextX > item.x - jumper.width + 1 && nextX < item.x + item.width && nextY >= item.y - jumper.height) {
         foothold = item
+        footholdIndex = i
         break
       }
     }
@@ -101,6 +114,11 @@
       addEventListen()
       jumper = { ...jumper, ...jumperSpeed }
       foothold = null
+      if (footholdIndex > 1) {
+        setTimeout(() => {
+          updateBoxes()
+        }, 100)
+      }
       return
     }
 
