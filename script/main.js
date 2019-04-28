@@ -94,50 +94,25 @@
     drawCurrentScore()
     drawBoxes()
   }
-  function drawStoringForce() {
+  // 绘制光圈
+  function drawLightRing() {
     var radius = 0
-    // if (storingForceCount) {
-    //   storingForceTimer = setInterval(() => {
-    //     ctx.beginPath()
-    //     ctx.strokeStyle = '#000'
-    //     ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
-    //     ctx.stroke()
-    //     drawBoxes()
-    //     radius += 4
-    //     if (storingForceCount === 0) {
-    //       clearInterval(storingForceTimer)
-    //     }
-    //     if (radius > 24) {
-    //       radius = 0
-    //     }
-    //   }, 20 / storingForceCount)
-    // }
-    // for (var i = 0; i < 100; i++) {
-    //   if (radius > 24) {
-    //     radius = 0
-    //   }
-    //   ctx.clearRect(jumper.x + jumper.width / 2 - radius, jumper.y + jumper.height / 2 - radius, 2 * radius, 2 * radius)
-    //   ctx.beginPath()
-    //   ctx.strokeStyle = '#000'
-    //   ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
-    //   ctx.stroke()
-    //   radius += 4
-    //   drawJumper()
-    //   drawBoxes()
-    // }
-    setInterval(() => {
+    storingForceTimer = setInterval(() => {
       if (radius > 20) {
         radius = 0
       }
-      ctx.clearRect(jumper.x - 10, jumper.y - 10, 42, 42)
+      ctx.clearRect(jumper.x - 20, jumper.y - 20, 60, 60)
       ctx.beginPath()
-      ctx.strokeStyle = '#000'
+      ctx.strokeStyle = '#888'
       ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
       ctx.stroke()
-      radius += 4
+      if (storingForceCount > 6) {
+        storingForceCount = 6
+      }
+      radius += storingForceCount
       drawJumper()
       drawBoxes()
-    }, 20)
+    }, 40)
   }
   // 绘制方块，眼睛、嘴巴
   function drawJumper() {
@@ -173,6 +148,7 @@
     ctx.clearRect(jumper.x, jumper.y, jumper.width, jumper.height)
     // 方块跳到当前得分的高度需要重绘得分防止被clearReact擦掉内容
     if (jumper.y < 50) {
+      ctx.clearRect(0, 0, innerWidth, 50)
       drawCurrentScore()
     }
     if (jumper.x >= innerWidth || jumper.y + jumper.height <= 0 || jumper.y > innerHeight) {
@@ -246,23 +222,30 @@
   }
   // 按下空格键开始计时
   function timeStart(event) {
-    // if (keyDownTime) {
-    //   var downTime = (new Date().getTime() - keyDownTime) / 100
-    //   storingForceCount = downTime / 5
-    // }
     if (!keyDownTime && event.keyCode === 32) {
+      countIncreaseTimer = setInterval(() => {
+        storingForceCount += 1
+      }, 40)
+      drawLightRing()
       keyDownTime = new Date().getTime()
-      drawStoringForce()
     }
   }
   // 松开空格键，结束计时开始跳跃
   function timeEnd(event) {
     if (keyDownTime && event.keyCode === 32) {
       removeEventListen()
+      if (countIncreaseTimer) {
+        clearInterval(countIncreaseTimer)
+      }
       // 空格键按下蓄力的时间，设置横向及纵向的移动速度
       var storingForceTime = (new Date().getTime() - keyDownTime) / 1000
       jumper.vy = parseInt(storingForceTime * 80)
       jumper.vx = parseInt(storingForceTime * 10) + 1
+      // 重绘一次页面
+      ctx.clearRect(0, 0, innerWidth, innerHeight)
+      drawJumper()
+      drawBoxes()
+      drawCurrentScore()
       // 播放跳跃音乐，500ms后播放停止
       jumperAudio.play()
       setTimeout(function() {
@@ -280,33 +263,46 @@
   // 触摸开始
   function touchStart(event) {
     if (!touchStartX) {
+      drawLightRing()
       touchStartX = event.changedTouches[0].pageX
     }
   }
+  function touchMove(event) {
+    var touchMoveX = event.changedTouches[0].pageX - touchStartX
+    storingForceCount = touchMoveX / 5
+  }
   // 触摸结束
   function touchEnd(event) {
-    var touchEndX = event.changedTouches[0].pageX
-    var distanceX = Math.abs(touchEndX - touchStartX)
-    jumper.vy = parseInt(distanceX / 10) + 10
-    jumper.vx = parseInt(distanceX / 20)
-    // 播放跳跃音乐，500ms后播放停止
-    jumperAudio.play()
-    setTimeout(function() {
-      jumperAudio.pause()
-    }, 500)
-    timer = setInterval(() => {
-      updateJumper()
-    }, 20)
-    touchStartX = 0
-    // 停止绘制光圈
-    storingForceCount = 0
-    clearInterval(storingForceTimer)
+    if (touchStartX) {
+      var touchEndX = event.changedTouches[0].pageX
+      var distanceX = Math.abs(touchEndX - touchStartX)
+      jumper.vy = parseInt(distanceX / 10) + 10
+      jumper.vx = parseInt(distanceX / 20)
+      // 重绘一次页面
+      ctx.clearRect(0, 0, innerWidth, innerHeight)
+      drawJumper()
+      drawBoxes()
+      drawCurrentScore()
+      // 播放跳跃音乐，500ms后播放停止
+      jumperAudio.play()
+      setTimeout(function() {
+        jumperAudio.pause()
+      }, 500)
+      timer = setInterval(() => {
+        updateJumper()
+      }, 20)
+      touchStartX = 0
+      // 停止绘制光圈
+      storingForceCount = 0
+      clearInterval(storingForceTimer)
+    }
   }
   // 添加监听键盘敲击事件
   function addEventListen() {
     window.addEventListener('keydown', timeStart)
     window.addEventListener('keyup', timeEnd)
     window.addEventListener('touchstart', touchStart)
+    window.addEventListener('touchmove', touchMove)
     window.addEventListener('touchend', touchEnd)
   }
   // 移除监听键盘敲击事件
@@ -314,6 +310,7 @@
     window.removeEventListener('keydown', timeStart)
     window.removeEventListener('keyup', timeEnd)
     window.removeEventListener('touchstart', touchStart)
+    window.removeEventListener('touchmove', touchMove)
     window.removeEventListener('touchend', touchEnd)
   }
   // 打开游戏页面后，初始化游戏

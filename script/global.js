@@ -40,4 +40,5 @@
   timer = null // 定时器，定时更新方块的位置
   storingForceCount = 0 // 蓄力值，光圈的多少
   storingForceTimer = 0 // 绘制光圈的定时器
+  countIncreaseTimer = 0 // 增加蓄力值的定时器
 })()
