@@ -94,6 +94,51 @@
     drawCurrentScore()
     drawBoxes()
   }
+  function drawStoringForce() {
+    var radius = 0
+    // if (storingForceCount) {
+    //   storingForceTimer = setInterval(() => {
+    //     ctx.beginPath()
+    //     ctx.strokeStyle = '#000'
+    //     ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
+    //     ctx.stroke()
+    //     drawBoxes()
+    //     radius += 4
+    //     if (storingForceCount === 0) {
+    //       clearInterval(storingForceTimer)
+    //     }
+    //     if (radius > 24) {
+    //       radius = 0
+    //     }
+    //   }, 20 / storingForceCount)
+    // }
+    // for (var i = 0; i < 100; i++) {
+    //   if (radius > 24) {
+    //     radius = 0
+    //   }
+    //   ctx.clearRect(jumper.x + jumper.width / 2 - radius, jumper.y + jumper.height / 2 - radius, 2 * radius, 2 * radius)
+    //   ctx.beginPath()
+    //   ctx.strokeStyle = '#000'
+    //   ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
+    //   ctx.stroke()
+    //   radius += 4
+    //   drawJumper()
+    //   drawBoxes()
+    // }
+    setInterval(() => {
+      if (radius > 20) {
+        radius = 0
+      }
+      ctx.clearRect(jumper.x - 10, jumper.y - 10, 42, 42)
+      ctx.beginPath()
+      ctx.strokeStyle = '#000'
+      ctx.arc(jumper.x + jumper.width / 2, jumper.y + jumper.height / 2, radius, 0, 2 * Math.PI)
+      ctx.stroke()
+      radius += 4
+      drawJumper()
+      drawBoxes()
+    }, 20)
+  }
   // 绘制方块，眼睛、嘴巴
   function drawJumper() {
     // 绘制身体
@@ -192,6 +237,7 @@
 
     if (hinder) {
       nextX = hinder.x - jumper.width
+      nextVY = -Math.abs(nextVY)
     }
     jumper.x = nextX
     jumper.y = nextY
@@ -200,8 +246,13 @@
   }
   // 按下空格键开始计时
   function timeStart(event) {
+    // if (keyDownTime) {
+    //   var downTime = (new Date().getTime() - keyDownTime) / 100
+    //   storingForceCount = downTime / 5
+    // }
     if (!keyDownTime && event.keyCode === 32) {
       keyDownTime = new Date().getTime()
+      drawStoringForce()
     }
   }
   // 松开空格键，结束计时开始跳跃
@@ -221,6 +272,9 @@
         updateJumper()
       }, 20)
       keyDownTime = 0
+      // 停止绘制光圈
+      storingForceCount = 0
+      clearInterval(storingForceTimer)
     }
   }
   // 触摸开始
@@ -244,6 +298,9 @@
       updateJumper()
     }, 20)
     touchStartX = 0
+    // 停止绘制光圈
+    storingForceCount = 0
+    clearInterval(storingForceTimer)
   }
   // 添加监听键盘敲击事件
   function addEventListen() {
