@@ -185,7 +185,7 @@
       if (footholdIndex > 2) {
         setTimeout(() => {
           updateBoxes()
-        }, 100)
+        }, 300)
       }
       return
     }
@@ -279,12 +279,12 @@
     keyDownTime = 0
     currentScore = 0
     removeEventListen()
-    ctx.clearRect(0, 0, innerWidth, innerHeight)
     setTimeout(() => {
+      ctx.clearRect(0, 0, innerWidth, innerHeight)
       // 关闭游戏页面更新最高分
       homePage.style.display = 'block'
       gamePage.style.display = 'none'
       highestScoreBtn.innerText = '最高分：' + highestScore
-    }, 700)
+    }, 1000)
   }
 })()
